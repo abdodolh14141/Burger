@@ -5,12 +5,14 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon index.js"
+    "start": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "types": "modules",
   "dependencies": {
+    "axios": "^1.13.2",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cluster": "^0.7.7",

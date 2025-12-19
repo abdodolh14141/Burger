@@ -1,0 +1,90 @@
+/* --- Slim Bar Container --- */
+.LastContainer {
+  background-color: var(--secondary);
+  padding: 15px 40px; /* Greatly reduced vertical padding */
+  display: flex;
+  flex-direction: row; /* Force horizontal layout */
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1); /* Thinner border */
+  margin-top: auto;
+  color: var(--white);
+}
+
+/* --- Mini Social Icons --- */
+.wrapper {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 12px; /* Tighter gap */
+}
+
+.wrapper .icon {
+  width: 32px; /* Smaller icons */
+  height: 32px;
+  background: rgba(255, 255, 255, 0.1); /* Subtle glass effect */
+  border-radius: 8px; /* Square-ish modern look */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.9rem; /* Smaller glyphs */
+  transition: var(--transition);
+}
+
+.wrapper .icon a {
+  color: var(--white);
+  display: flex;
+}
+
+.wrapper .icon:hover {
+  transform: translateY(-3px);
+  background: var(--primary);
+}
+
+/* --- Slim Text Section --- */
+.par {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Space between Phone and About */
+}
+
+.par h1 {
+  font-size: 0.9rem; /* Match paragraph size */
+  font-weight: 600;
+  margin: 0;
+  color: var(--white);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  padding-right: 20px;
+}
+
+.par p {
+  font-size: 0.85rem;
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.par p a {
+  color: var(--white);
+  text-decoration: none;
+  margin-left: 5px;
+}
+
+.par p a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+/* --- Mobile Fix --- */
+@media (max-width: 600px) {
+  .LastContainer {
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    text-align: center;
+  }
+  .par h1 {
+    border-right: none;
+    padding-right: 0;
+  }
+}
