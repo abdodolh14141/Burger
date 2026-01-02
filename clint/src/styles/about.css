@@ -1,104 +1,114 @@
+/* Container and Background */
 .container_about {
-  width: 100%;
-  margin: auto;
-  padding: 10px;
-  margin: 10px auto;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
 }
 
-.cardAbout button:hover {
-  transform: scale(1);
-}
-
-article {
-  padding: 20px;
-  margin: 0 auto;
-  max-width: 800px; /* Constrain the maximum width for readability */
-  background-color: transparent; /* Use white background for main content */
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
-}
-
+/* The Main Card */
 .cardAbout {
+  background: #ffffff;
+  display: grid;
+  grid-template-columns: 1fr;
+  width: 80%;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  margin: auto;
+}
+
+@media (min-width: 768px) {
+  .cardAbout {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Left Side: Information Content */
+.text-content {
+  padding: 3rem;
+  background-color: #0f172a; /* Dark Navy */
+  color: #ffffff;
   display: flex;
   flex-direction: column;
-  border-radius: 1rem;
-  padding: 15px; /* Add padding to the card */
-  margin: 5px;
-  width: 100%;
-  background-color: rgb(164, 160, 189);
+  justify-content: center;
 }
 
-.text-content {
-  margin-bottom: 20px; /* Space between text and report section */
-}
-
-.text-content {
-  color: whitesmoke; /* Dark color for headings */
-  font-size: 1.8em; /* Larger font size for emphasis */
+.text-content h3 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  color: #fbbf24; /* Burger Gold */
 }
 
 .text-content p {
-  color: white; /* Slightly lighter color for text */
-  line-height: 1.6; /* Improved readability */
+  line-height: 1.8;
+  font-size: 1.1rem;
+  color: #cbd5e1;
+  margin: 0;
 }
 
-.text-content a {
-  text-decoration: none; /* No underline */
-  color: #1e90ff; /* Bright blue for links */
-  font-weight: bold;
-  font-size: 1.5rem;
-  background-color: chartreuse;
-  border-radius: 1rem;
-  padding: 5px;
-  cursor: pointer;
-}
-
-.text-content a:hover {
-  text-decoration: underline; /* Underline on hover */
-}
-
+/* Right Side: Report Form */
 .report {
-  border-top: 1px solid #ddd; /* Separator line between sections */
-  margin: 10px;
-  padding: 10px;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .report h1 {
-  font-size: 1.8em; /* Heading for report section */
-  color: #333;
-  font-weight: bold;
-  text-align: center;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1.5rem;
 }
 
 .report textarea {
-  width: 100%; /* Full width for textarea */
-  padding: 5px;
-  margin: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-family: "Arial", sans-serif;
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 1rem;
+  resize: none;
+  transition: all 0.2s ease;
+  margin-bottom: 1.5rem;
+}
+
+.report textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
 }
 
 .report button {
-  background-color: #1e90ff; /* Bright blue background */
-  color: white; /* White text */
-  padding: 10px 20px; /* Padding for button */
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
   width: 100%;
+  padding: 1rem;
+  background-color: #e11d48; /* Crimson Red */
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
 }
 
 .report button:hover {
-  background-color: #0066cc; /* Darker blue on hover */
+  background-color: #be123c;
+  transform: translateY(-2px);
 }
 
-@media (max-width: 600px) {
-  /* Responsive design for smaller screens */
-  .card {
-    flex-direction: column; /* Ensure elements stack vertically */
-  }
+.report button:active {
+  transform: translateY(0);
+}
 
-  textarea {
-    rows: 5; /* Reduce rows for smaller screens */
-  }
+/* Accessibility: Focus visible for keyboard users */
+.report button:focus-visible {
+  outline: 3px solid #fbbf24;
+  outline-offset: 2px;
 }

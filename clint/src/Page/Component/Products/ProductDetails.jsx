@@ -2,198 +2,202 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-
 import "../../../styles/product_detail.css";
 
 /**
- * Custom Hook: fetch product with cancellation + better error messages
+ * Custom Hook: useFetchProduct
+ * Pass the ID as an argument rather than calling useParams inside the hook.
  */
-const useFetchProduct = () => {
-  const { id } = useParams();
+const useFetchProduct = (productId) => {
   const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(Boolean(id));
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchProduct = useCallback(async () => {
-    if (!id) {
-      setError("No product id provided");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError(null);
-
-      const { data } = await axios.get(`/api/product/${id}`);
-
-      if (data?.product) {
-        setProduct(data.product);
-      } else {
-        setError("Product not found");
+  const fetchProduct = useCallback(
+    async (signal) => {
+      if (!productId) {
+        setError("No product identifier provided.");
+        setLoading(false);
+        return;
       }
-    } catch (err) {
-      // prefer API message, fallback to axios / JS message
-      const message =
-        err?.response?.data?.message ||
-        err?.message ||
-        "Failed to load product";
-      setError(message);
-      // toast here is optional; the UI also renders the error
-      toast.error(message);
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
+
+      try {
+        setLoading(true);
+        setError(null);
+        // Ensure the URL matches your backend route
+        const { data } = await axios.get(`/api/product/${productId}`, {
+          signal,
+        });
+
+        if (data?.product) {
+          setProduct(data.product);
+        } else {
+          throw new Error("Product not found");
+        }
+      } catch (err) {
+        if (err.name === "CanceledError") return;
+        const message =
+          err?.response?.data?.message ||
+          err?.message ||
+          "Failed to load product";
+        setError(message);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [productId] // Fixed: uses productId from arguments
+  );
 
   useEffect(() => {
     const controller = new AbortController();
     fetchProduct(controller.signal);
-
     return () => controller.abort();
   }, [fetchProduct]);
 
   return { product, loading, error };
 };
 
-/**
- * Product Details Page
- */
 export const ProductDetails = () => {
+  const { id } = useParams(); // Get ID from URL
   const navigate = useNavigate();
-  const { product, loading, error } = useFetchProduct();
+  const { product, loading, error } = useFetchProduct(id);
 
-  // local UI state
   const [imgError, setImgError] = useState(false);
   const [adding, setAdding] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
-  const safePrice = useMemo(() => {
-    const priceNum = Number(product?.price ?? 0);
-    return new Intl.NumberFormat("en-US", {
+  useEffect(() => window.scrollTo(0, 0), []);
+
+  const formatCurrency = (amount) =>
+    new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
-    }).format(Number.isFinite(priceNum) ? priceNum : 0);
-  }, [product?.price]);
+    }).format(amount);
+
+  const unitPrice = Number(product?.price ?? 0);
+  const totalPriceLabel = useMemo(
+    () => formatCurrency(unitPrice * quantity),
+    [unitPrice, quantity]
+  );
 
   const handleAddToCart = async () => {
     if (!product) return;
     setAdding(true);
     try {
-      // Replace with real cart API / context call
-      await new Promise((r) => setTimeout(r, 400));
-      toast.success(`${product.name || "Product"} added to cart (${quantity})`);
+      await new Promise((r) => setTimeout(r, 600));
+      toast.success(`${quantity}x ${product.name} added to your basket!`);
     } catch (err) {
-      toast.error("Could not add to cart");
+      toast.error("Operation failed. Please try again.");
     } finally {
       setAdding(false);
     }
   };
 
-  const inc = () => setQuantity((q) => Math.min(99, q + 1));
-  const dec = () => setQuantity((q) => Math.max(1, q - 1));
-
   if (loading)
     return (
-      <div className="status-screen" role="status" aria-live="polite">
-        <div className="spinner" aria-hidden="true"></div>
-        <p>Fetching the best ingredients...</p>
+      <div className="status-screen animate-pulse">
+        <div className="spinner" />
+        <p>Preparing fresh data...</p>
       </div>
     );
 
   if (error || !product)
     return (
-      <div className="status-screen" role="alert" aria-live="assertive">
-        <h2>{error || "Product Not Found"}</h2>
-        <div style={{ display: "flex", gap: 12, marginTop: 12 }}>
+      <div className="status-screen error-view">
+        <h2 className="text-error">{error || "Something went wrong"}</h2>
+        <div
+          className="actions"
+          style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}
+        >
           <button className="btn-secondary" onClick={() => navigate(-1)}>
             Go Back
           </button>
-          <Link to="/shop" className="btn-secondary">
-            Back to Menu
+          <Link to="/shop" className="btn-primary">
+            Browse Menu
           </Link>
         </div>
       </div>
     );
 
-  const { name = "Unnamed Product", dsc, img, rate = 0, reviews = 0 } = product;
-
-  const fallbackImg =
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='100%25' height='100%25' fill='%23eee'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23999' font-family='Arial' font-size='18'%3ENo image available%3C/text%3E%3C/svg%3E";
+  const { name, dsc, img, rate = 0, reviews = 0 } = product;
 
   return (
-    <main className="details-wrapper">
-      <nav className="breadcrumb" aria-label="Breadcrumb">
-        <Link to="/shop">Shop</Link> / <span>{name}</span>
-      </nav>
+    <main className="details-wrapper container">
+      <div className="breadcrumb-container">
+        <article className="product-layout">
+          <div className="image-stage">
+            <img
+              src={!imgError && img ? img : "/assets/placeholder-food.png"}
+              alt={name}
+              className={`hero-image ${imgError ? "placeholder" : ""}`}
+              onError={() => setImgError(true)}
+            />
+            {rate >= 4.7 && <span className="tag-popular">High Rated</span>}
+          </div>
 
-      <article className="product-layout">
-        <div className="image-stage">
-          <img
-            src={!imgError && img ? img : fallbackImg}
-            alt={name}
-            className="hero-image"
-            width={400}
-            onError={() => setImgError(true)}
-          />
-          {rate >= 4.5 && <div className="tag-popular">Best Seller</div>}
-        </div>
-
-        <section className="content-stage">
-          <header>
-            <h1 className="product-name">{name}</h1>
-            <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-              <p className="price-display">{safePrice}</p>
-              <div className="rating" aria-label={`Rating: ${rate} out of 5`}>
-                <strong>{rate?.toFixed?.(1) ?? "0.0"}</strong>
-                <span className="reviews">({reviews})</span>
+          <section className="content-stage">
+            <header className="product-header">
+              <h1 className="product-name">{name}</h1>
+              <div className="meta-row">
+                <span className="price-tag">{formatCurrency(unitPrice)}</span>
+                <div className="rating-pill" aria-label={`${rate} star rating`}>
+                  <span className="star">★</span>
+                  <strong>{rate.toFixed(1)}</strong>
+                  <span className="count">({reviews} reviews)</span>
+                </div>
               </div>
-            </div>
-          </header>
+            </header>
 
-          <div className="description-box">
-            <h3>Description</h3>
-            <p>{dsc || "No description provided for this item."}</p>
-          </div>
-
-          <div className="purchase-zone" aria-live="polite">
-            <div className="quantity-control" style={{ marginBottom: 12 }}>
-              <button
-                aria-label="Decrease quantity"
-                onClick={dec}
-                className="btn-quiet"
-              >
-                −
-              </button>
-              <span className="quantity" aria-live="polite">
-                {quantity}
-              </span>
-              <button
-                aria-label="Increase quantity"
-                onClick={inc}
-                className="btn-quiet"
-              >
-                +
-              </button>
+            <div className="description-box">
+              <h3>Ingredients & Details</h3>
+              <p>{dsc || "Standard preparation with fresh ingredients."}</p>
             </div>
 
-            <button
-              className="btn-primary-large"
-              onClick={handleAddToCart}
-              disabled={adding}
-              aria-busy={adding}
-            >
-              {adding ? "Adding..." : `Add to Basket — ${safePrice}`}
-            </button>
-          </div>
+            <div className="purchase-card">
+              <div className="quantity-selector">
+                <button
+                  disabled={quantity <= 1}
+                  onClick={() => setQuantity((q) => q - 1)}
+                >
+                  −
+                </button>
+                <span className="qty-value">{quantity}</span>
+                <button
+                  disabled={quantity >= 20}
+                  onClick={() => setQuantity((q) => q + 1)}
+                >
+                  +
+                </button>
+              </div>
 
-          <ul className="trust-points">
-            <li>✓ Made to Order</li>
-            <li>✓ Fresh Ingredients</li>
-            <li>✓ 45 Min Delivery</li>
-          </ul>
-        </section>
-      </article>
+              <button
+                className="btn-add-to-cart"
+                onClick={handleAddToCart}
+                disabled={adding}
+              >
+                {adding ? "Adding..." : `Add to Basket • ${totalPriceLabel}`}
+              </button>
+            </div>
+
+            <footer className="product-footer">
+              <div className="trust-badge">
+                <span className="icon">🚚</span>
+                <div>
+                  <strong>Fast Delivery</strong>
+                  <p>30-45 mins</p>
+                </div>
+              </div>
+              <div className="trust-badge">
+                <span className="icon">🌿</span>
+                <div>
+                  <strong>100% Fresh</strong>
+                  <p>Sourced daily</p>
+                </div>
+              </div>
+            </footer>
+          </section>
+        </article>
+      </div>
     </main>
   );
 };

@@ -69,7 +69,7 @@
 }
 
 .product-card {
-  background: var(--white);
+  background-color: #e1e8ef;
   border-radius: var(--radius);
   overflow: hidden;
   text-decoration: none;

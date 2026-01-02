@@ -124,7 +124,7 @@ export const authProductId = async (req, res) => {
   const { id } = req.params;
 
   // 1) Basic validation
-  if (!id || typeof id !== "string" || !id.trim()) {
+  if (!id) {
     return res.status(400).json({
       success: false,
       message: "Product ID is required.",
@@ -142,12 +142,7 @@ export const authProductId = async (req, res) => {
     const catalogue = response?.data;
 
     // 4) Robust search supporting different id flavors
-    const product = catalogue.find(
-      (p) =>
-        String(p?.id) === String(id) ||
-        String(p?._id) === String(id) ||
-        String(p?.slug) === String(id)
-    );
+    const product = catalogue.find((p) => p?.id === id || p?._id === id);
 
     if (!product) {
       return res.status(404).json({

@@ -1,168 +1,203 @@
-/* ---------------  DESIGN TOKENS  --------------- */
+/* --- Variables & Reset --- */
 :root {
-  --red: #e63946;
-  --cream: #fdf0d5;
-  --dark: #1d1d1d;
-  --gray: #6c757d;
-  --white: #ffffff;
-  --radius: 12px;
-  --shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  --trans: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  font-size: 16px;
-  scroll-behavior: smooth;
+  --primary: #e11d48; /* Crimson Red */
+  --secondary: #fbbf24; /* Burger Gold */
+  --dark: #0f172a;
+  --text-muted: #64748b;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+.home-container {
+  overflow-x: hidden;
 }
 
-/* ---------------  HERO SECTION  --------------- */
-.hero {
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* --- Hero Section --- */
+.hero-section {
+  padding: 5rem 0;
+  min-height: 85vh;
   display: flex;
   align-items: center;
-  gap: 2rem;
-  padding: 4rem 1.25rem;
-  max-width: 1200px;
-  margin-inline: auto;
-  min-height: 80vh;
 }
 
-.hero__content {
-  flex: 1 1 50%;
-  animation: fadeUp 0.8s var(--trans) both;
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  align-items: center;
 }
 
-.hero__content h1 {
-  font-size: clamp(2.2rem, 5vw, 3.5rem);
-  font-weight: 800;
+@media (min-width: 992px) {
+  .hero-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.hero__subtitle {
+  color: var(--primary);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 2px;
+  font-size: 0.875rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.hero__title {
+  font-size: clamp(2.5rem, 5vw, 4rem);
   line-height: 1.1;
-  margin: 0 0 0.5em;
+  color: var(--dark);
+  font-weight: 800;
+  margin-bottom: 1.5rem;
 }
 
-.hero__content h1 span {
-  color: var(--red);
-  border-bottom: 2px solid var(--red);
+.hero__title span {
+  color: var(--primary);
+  position: relative;
 }
 
-.hero__content p {
-  margin: 0 0 2rem;
-  font-size: 1.1rem;
-  color: var(--gray);
-  max-width: 55ch;
+.hero__text {
+  font-size: 1.125rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+  max-width: 500px;
+}
+
+/* --- Buttons --- */
+.hero__actions {
+  display: flex;
+  gap: 1rem;
 }
 
 .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--red);
-  color: var(--white);
-  border: 2px solid transparent;
-  padding: 0.75rem 1.75rem;
-  font: 600 1rem/1 system-ui, sans-serif;
-  border-radius: var(--radius);
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background var(--trans), transform var(--trans),
-    border-color var(--trans);
+  transition: var(--transition);
+  border: 2px solid transparent;
 }
 
-.btn:hover,
-.btn:focus-visible {
-  background: #c1121f;
-  transform: translateY(-2px);
+.btn--primary {
+  background: var(--primary);
+  color: white;
 }
 
-.btn:focus-visible {
-  outline: 2px solid var(--white);
-  outline-offset: 2px;
+.btn--primary:hover {
+  background: #be123c;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(225, 29, 72, 0.2);
 }
 
+.btn--outline {
+  border-color: var(--dark);
+  background: transparent;
+  color: var(--dark);
+}
+
+.btn--outline:hover {
+  background: var(--dark);
+  color: white;
+}
+
+/* --- Visuals --- */
 .hero__visual {
-  flex: 1 1 50%;
-  display: grid;
-  place-items: center;
+  position: relative;
+}
+
+.image-blob {
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  animation: blob-animate 8s infinite alternate;
 }
 
 .hero__visual img {
   width: 100%;
-  max-width: 420px;
-  height: auto;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  animation: fadeUp 0.8s var(--trans) 0.2s both;
+  height: 500px;
+  object-fit: cover;
 }
 
-/* ---------------  MODEL / MENU PREVIEW  --------------- */
-.menu-preview {
-  gap: 2rem;
-  padding: 4rem 1.25rem;
-  max-width: 1200px;
-  margin-inline: auto;
-  min-height: 80vh;
+.floating-badge {
+  position: absolute;
+  bottom: 10%;
+  left: -5%;
+  padding: 1.5rem;
+  border-radius: 50%;
+  font-weight: 800;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  animation: float 3s ease-in-out infinite;
 }
 
-.model {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  place-items: center;
-  gap: 18rem;
-  animation: fadeUp 0.8s var(--trans);
-}
-
-.model h2 {
-  font-size: 2.5rem;
-  margin: 0.5rem 0 0.25rem;
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
-  padding: 5px;
-  border-bottom: 2px solid var(--red);
-}
-
-.model p {
-  color: black;
-  margin: 0 0 2.5rem;
-  font-size: 1rem;
-}
-
-.model img {
-  width: 100%;
-  max-width: 420px;
-  height: auto;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  transition: transform var(--trans), box-shadow var(--trans);
-}
-
-.model img:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
-}
-
-/* ---------------  ANIMATIONS  --------------- */
-@keyframes fadeUp {
+@keyframes blob-animate {
   from {
-    opacity: 0;
-    transform: translateY(20px);
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
   }
   to {
-    opacity: 1;
-    transform: translateY(0);
+    border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%;
   }
 }
 
-/* ---------------  RESPONSIVE  --------------- */
-@media (max-width: 768px) {
-  .hero,
-  .menu-preview {
-    flex-direction: column-reverse;
-    text-align: center;
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
   }
+  50% {
+    transform: translateY(-15px);
+  }
+}
 
-  .hero__content p,
-  .model p {
-    margin-inline: auto;
-  }
+/* --- Menu Preview --- */
+.menu-preview {
+  padding: 6rem 0;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.section-header h2 {
+  font-size: 2.5rem;
+  color: var(--dark);
+  margin-bottom: 1rem;
+}
+
+.preview-card {
+  display: flex;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.preview-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.preview-card__image {
+  flex: 1;
+}
+
+.preview-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.preview-card__content {
+  flex: 1;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }

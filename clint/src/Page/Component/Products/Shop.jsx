@@ -49,7 +49,6 @@ const ProductCard = ({ id, name, img, price, dsc, rate, category }) => {
           src={img || PLACEHOLDER}
           alt={name}
           className="card-image"
-          loading="lazy"
           onError={(e) => (e.target.src = PLACEHOLDER)}
         />
         {rate >= 4.5 && <span className="popular-badge">🔥 Top Rated</span>}

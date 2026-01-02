@@ -25,9 +25,8 @@ export const Footer = () => {
       </div>
 
       <div className="par">
-        <h1>Phone: 15248</h1>
         <p>
-          This Website Is Original • <Link to="/api/about">About Us</Link>
+          This Website Is Original Dola• <Link to="/about">About Us</Link>
         </p>
       </div>
     </footer>

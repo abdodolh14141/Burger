@@ -33,10 +33,13 @@ export const About = () => {
       <article>
         <section className="cardAbout">
           <div className="text-content">
-            <h3>About Twinky</h3>
+            <h3>About Burger-Big</h3>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim
-              ad minim veniam, quis nostrud exercitation.
+              Tell Us What You Think! At Burger-Big, we're passionate about
+              crafting the perfect burger experience for you. Your feedback
+              helps us improve and serve you better. Whether it's a suggestion,
+              compliment, or concern, we want to hear from you. Please share
+              your thoughts below and help us make Burger-Big even better!
             </p>
           </div>
           <div className="report">
